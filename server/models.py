@@ -19,7 +19,7 @@ class Customer(db.Model, SerializerMixin):
 
     reviews = db.relationship('Review', back_populates='customer')
     
-    serialize_rules = ('-reviews.customer',)
+    serialize_rules = ['-reviews.customer']
     
     items = association_proxy('reviews', 'item', creator=lambda item_obj: Review(item=item_obj))
 
@@ -37,7 +37,7 @@ class Item(db.Model, SerializerMixin):
 
     reviews = db.relationship('Review', back_populates='item')
 
-    serialize_rules = ('-reviews.item',)
+    serialize_rules = ['-reviews.item']
 
     def __repr__(self):
         return f'<Item {self.id}, {self.name}, {self.price}>'
@@ -51,7 +51,7 @@ class Review(db.Model, SerializerMixin):
     customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"))
     item_id = db.Column(db.Integer, db.ForeignKey("items.id"))
 
-    serialize_rules = ('-customer.reviews', '-item.reviews')
+    serialize_rules = ['-customer.reviews', '-item.reviews']
 
     customer = db.relationship("Customer", back_populates="reviews")
     item = db.relationship("Item", back_populates="reviews")
